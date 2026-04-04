@@ -1,10 +1,12 @@
 import "@/global.css";
 import { SplashScreen, Stack } from "expo-router";
-import {useFonts} from "expo-font"
+import { useFonts } from "expo-font"
 import { useEffect } from "react";
 
+SplashScreen.preventAutoHideAsync(); // Prevent the splash screen from auto-hiding
+
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     "sans-light": require("../assets/fonts/PlusJakartaSans-Light.ttf"),
     "sans-regular": require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
     "sans-medium": require("../assets/fonts/PlusJakartaSans-Medium.ttf"),
@@ -16,13 +18,12 @@ export default function RootLayout() {
   useEffect(() => {
     if (!fontsLoaded) {
       // You can show a loading screen or return null until the fonts are loaded
-      SplashScreen.hideAsync(); // Hide the splash screen if you want to show it while loading fonts
+      void SplashScreen.hideAsync(); // Hide the splash screen if you want to show it while loading fonts
     }
-  }, [fontsLoaded])
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) {
-    return null; // Or you can return a loading indicator here
-  }
+  if (fontError) throw fontError;
+  if (!fontsLoaded) return null;
 
 
   return <Stack screenOptions={{ headerShown: false }} />;

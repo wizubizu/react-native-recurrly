@@ -26,7 +26,7 @@ const SubscriptionCard = ({
       style={!expanded && color ? { backgroundColor: color } : undefined}
     >
       <View className="sub-head">
-        <View className="sub-name">
+        <View className="sub-main">
           <Image source={icon} className="sub-icon" />
           <View className="sub-copy">
             <Text numberOfLines={1} className="sub-title">
@@ -55,7 +55,7 @@ const SubscriptionCard = ({
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {paymentMethod?.trim()}
+                  {paymentMethod?.trim() ?? 'Not Provided'}
                 </Text>
               </View>
             </View>
@@ -68,7 +68,7 @@ const SubscriptionCard = ({
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {category?.trim() || plan?.trim()}
+                  {(category?.trim() || plan?.trim() || 'Not Provided')}
                 </Text>
               </View>
             </View>
@@ -81,7 +81,7 @@ const SubscriptionCard = ({
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {startDate ? formatSubscriptionDateTime(startDate) : ""}
+                  {(startDate ? formatSubscriptionDateTime(startDate) : "") || 'Not Provided'}
                 </Text>
               </View>
             </View>
@@ -94,7 +94,7 @@ const SubscriptionCard = ({
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {renewalDate ? formatSubscriptionDateTime(renewalDate) : ""}
+                  {(renewalDate ? formatSubscriptionDateTime(renewalDate) : "") || 'Not Provided'}
                 </Text>
               </View>
             </View>
@@ -107,7 +107,7 @@ const SubscriptionCard = ({
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {status ? formatStatusLabel(status) : "" }
+                  {(status ? formatStatusLabel(status) : "" ) || 'Not Provided'}
                 </Text>
               </View>
             </View>
