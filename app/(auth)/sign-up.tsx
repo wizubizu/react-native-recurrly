@@ -42,19 +42,31 @@ const SignUp = () => {
             });
             return;
         }
-
         // Send verification email
-        if (!error) {
-            await signUp.verifications.sendEmailCode();
+        try {
+          await signUp.verifications.sendEmailCode();
+        } catch (e) {
+          console.error('Failed to send verification email:', e);
+          posthog.capture('verification_email_failed', {
+            error_message: e instanceof Error ? e.message : 'Unknown error',
+          });
         }
     };
 
-    const handleVerify = async () => {
+  const handleVerify = async () => {
+    try {
         await signUp.verifications.verifyEmailCode({
             code,
         });
+    } catch (e) {
+        console.error('Verification failed:', e);
+        posthog.capture('email_verification_failed', {
+            error_message: e instanceof Error ? e.message : 'Unknown error',
+        });
+        return;
+    }
 
-        if (signUp.status === 'complete') {
+    if (signUp.status === 'complete') {
             await signUp.finalize({
                 navigate: ({ session, decorateUrl }) => {
                     if (session?.currentTask) {
