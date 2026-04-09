@@ -44,12 +44,12 @@ export default function App() {
         });
     };
 
-    const handleCreateSubscription = (newSubscription: Subscription) => {
+    const handleCreateSubscription = (newSubscription: Subscription & { frequency?: string }) => {
         addSubscription(newSubscription);
         posthog.capture('subscription_created', {
             subscription_name: newSubscription.name,
             subscription_price: newSubscription.price,
-            subscription_frequency: newSubscription.frequency,
+            subscription_frequency: newSubscription.frequency ?? 'Unspecified',
             subscription_category: newSubscription.category || 'Uncategorized',
         });
     };
@@ -90,16 +90,19 @@ export default function App() {
                             </View>
 
                             <View className="mb-5">
-                                <ListHeading title="Upcoming" />
+                              <ListHeading title="Upcoming" />
 
-                                <FlatList
-                                    data={upcomingSubscriptions}
-                                    renderItem={({ item }) => (<UpcomingSubscriptionCard {...item} />)}
-                                    keyExtractor={(item) => item.id}
-                                    horizontal
-                                    showsHorizontalScrollIndicator={false}
-                                    ListEmptyComponent={<Text className="home-empty-state">No upcoming renewals yet.</Text>}
-                                />
+                              <FlatList
+                                data={upcomingSubscriptions}
+                                renderItem={({ item }) => {
+                                  const daysLeft = dayjs(item.renewalDate).diff(dayjs(), "day");
+                                  return <UpcomingSubscriptionCard {...item} daysLeft={daysLeft} />;
+                                }}
+                                keyExtractor={(item) => item.id}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                ListEmptyComponent={<Text className="home-empty-state">No upcoming renewals yet.</Text>}
+                              />
                             </View>
 
                             <ListHeading title="All Subscriptions" />
